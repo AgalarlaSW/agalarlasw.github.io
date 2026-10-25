@@ -283,7 +283,7 @@
 
   <p class="subtitle">
     Arkadaşlarınla oynayabileceğin, tamamen <b>SMP (Survival Multiplayer)</b> odaklı, 
-    <b>Ametis Kazma</b> gibi özel özellikler barındıran Türk Minecraft sunucusu.
+    <b>Ametis Eşyalar</b> ve özel etkinlikler barındıran Türk Minecraft sunucusu.
   </p>
 
   <div class="ip-box">
@@ -325,23 +325,23 @@
 
     <div class="features">
       <div class="feature star">
-        <h3>💎 Ametis Kazma</h3>
-        <p>Sunucuya özel Ametis Kazma ile <b>3x3'lük alanlar</b> halinde kazı yaparak çok daha hızlı kaynak topla.</p>
+        <h3>💎 Ametis Eşyalar</h3>
+        <p>Sunucuya özel Ametis <b>Kazma, Balta ve Kürek</b>! Ametis Kazma ile 3x3 kazı yap, Ametis Balta ile ağaçları devir, rakiplerinin önüne geç.</p>
+      </div>
+
+      <div class="feature">
+        <h3>🎉 Çekilişler & Etkinlikler</h3>
+        <p>Sunucu içi ve etkinliklerdeki çekilişlere katılarak <b>Ametis eşyalar</b> ve özel ödüller kazanma şansı yakala.</p>
       </div>
 
       <div class="feature">
         <h3>🛡️ Aktif Yetkililer</h3>
         <p>Sunucuda her zaman aktif olan yetkililerimiz bulunur. Sorunlarınızda ve ihtiyaçlarınızda size hızlıca yardımcı olurlar.</p>
       </div>
-
+      
       <div class="feature">
         <h3>🌲 Saf SMP Deneyimi</h3>
         <p>Hile, haksız rekabet veya gereksiz eklentiler yok. Tamamen survival odaklı, temiz ve adil bir oyun ortamı.</p>
-      </div>
-      
-      <div class="feature">
-        <h3>⚔️ PvP & Etkinlikler</h3>
-        <p>Arkadaşlarınla PvP atabileceğin, düzenli olarak yapılan ödüllü etkinlikler ve turnuvalarla dolu bir sunucu.</p>
       </div>
     </div>
   </div>
@@ -473,12 +473,11 @@ function setStatus(state, playerCount) {
 }
 
 /* ==========================================
-   API İSTEĞİ (Sadece Hızlı Olan mcstatus.io Kullanılıyor)
+   API İSTEĞİ (Hızlı Olan mcstatus.io)
    ========================================== */
 async function fetchStatus() {
   try {
     const timestamp = Date.now();
-    // Yavaş olan mcsrvstat.us kaldırıldı. Doğrudan mcstatus.io kullanılıyor.
     const res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
     const data = await res.json();
 
