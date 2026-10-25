@@ -473,21 +473,42 @@ function setStatus(state, playerCount) {
 }
 
 /* ==========================================
-   API İSTEĞİ (Hızlı Olan mcstatus.io)
+   API İSTEĞİ (Çoklu API - Paralel Sorgu)
    ========================================== */
 async function fetchStatus() {
-  try {
-    const timestamp = Date.now();
-    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
-    const data = await res.json();
+  const timestamp = Date.now();
+  const encodedIp = encodeURIComponent(CONFIG.queryIp);
 
-    if (data.online) {
-      setStatus("online", data.players?.online);
+  // Kullanılabilir API uç noktaları
+  const endpoints = [
+    `https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`,
+    `https://api.mcsrvstat.us/3/${CONFIG.queryIp}?t=${timestamp}`,
+    `https://api.gamemonitoring.de/servers/status?ip=${encodedIp}&t=${timestamp}`
+  ];
+
+  try {
+    // Tüm API'lere aynı anda istek at, ilk başarılı yanıtı al
+    const firstSuccess = await Promise.any(
+      endpoints.map(url => 
+        fetch(url, { cache: "no-store" })
+          .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+          .then(data => {
+            // API'ye göre farklı alan isimleri kontrol et
+            if (data.online !== undefined) return { online: data.online, players: data.players?.online };
+            if (data.status !== undefined) return { online: data.status, players: data.numplayers };
+            throw new Error("Geçersiz format");
+          })
+      )
+    );
+
+    if (firstSuccess.online) {
+      setStatus("online", firstSuccess.players);
     } else {
       setStatus("offline");
     }
   } catch (err) {
-    console.warn("API'den yanıt alınamadı:", err);
+    // Tüm API'ler başarısız olduysa
+    console.warn("Tüm API'lerden yanıt alınamadı:", err);
     setStatus("error");
   }
 }
