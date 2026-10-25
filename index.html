@@ -7,6 +7,7 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  /* KOYU TEMA (Varsayılan) */
   :root {
     --bg-color: #0f172a;
     --card-bg: #1e293b;
@@ -15,6 +16,21 @@
     --text-muted: #94a3b8;
     --primary-blue: #3b82f6;
     --primary-yellow: #facc15;
+    --nav-bg: #0b1120;
+    --input-bg: #0f172a;
+  }
+
+  /* AÇIK TEMA */
+  [data-theme="light"] {
+    --bg-color: #f1f5f9;
+    --card-bg: #ffffff;
+    --border-color: #cbd5e1;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --primary-blue: #2563eb;
+    --primary-yellow: #ca8a04;
+    --nav-bg: #ffffff;
+    --input-bg: #f8fafc;
   }
 
   html { scroll-behavior: smooth; }
@@ -25,79 +41,63 @@
     color: var(--text-main);
     min-height: 100vh;
     line-height: 1.6;
+    transition: background-color 0.3s, color 0.3s;
   }
 
-  /* KORUMA - Metin seçimi ve uzun basma engeli */
+  /* KORUMA */
   html, body {
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none;
+    -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
   }
   img { -webkit-user-drag: none; user-select: none; pointer-events: none; }
 
-  .wrap {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
 
   /* NAVBAR */
   nav {
-    background-color: #0b1120;
+    background-color: var(--nav-bg);
     border-bottom: 1px solid var(--border-color);
-    position: sticky;
-    top: 0;
-    z-index: 50;
+    position: sticky; top: 0; z-index: 50;
+    transition: background-color 0.3s;
   }
   .nav-inner {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 16px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    max-width: 1100px; margin: 0 auto; padding: 12px 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;
   }
-  .logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+  .logo { font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
   .logo-mark {
-    width: 32px; height: 32px;
-    display: grid; place-items: center;
-    border-radius: 6px;
-    background-color: var(--primary-yellow);
-    color: #000;
-    font-weight: 900;
+    width: 32px; height: 32px; display: grid; place-items: center;
+    border-radius: 6px; background-color: var(--primary-yellow); color: #000; font-weight: 900;
   }
   .logo span { color: var(--primary-yellow); }
 
-  .nav-links { display: flex; gap: 20px; font-size: 0.9rem; }
-  .nav-links a { color: var(--text-muted); text-decoration: none; transition: color .2s; }
-  .nav-links a:hover { color: var(--primary-yellow); }
+  .nav-links { display: flex; gap: 18px; font-size: 0.9rem; align-items: center; flex-wrap: wrap; }
+  .nav-links a, .nav-btn {
+    color: var(--text-muted); text-decoration: none; transition: color .2s; font-weight: 600;
+    background: none; border: none; cursor: pointer; font-size: 0.9rem;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-links a:hover, .nav-btn:hover { color: var(--primary-yellow); }
+  
+  /* SVG İkon Boyutları */
+  .nav-icon { width: 18px; height: 18px; fill: currentColor; }
+
+  .nav-right { display: flex; align-items: center; gap: 15px; }
+  
+  .theme-toggle, .login-btn {
+    background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);
+    padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .theme-toggle:hover, .login-btn:hover { border-color: var(--primary-yellow); color: var(--primary-yellow); }
 
   /* HERO */
-  header.hero {
-    padding: 70px 0 50px;
-    text-align: center;
-  }
-
+  header.hero { padding: 60px 0 40px; text-align: center; }
+  
   .status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 16px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    border: 1px solid var(--border-color);
-    background-color: var(--card-bg);
-    margin-bottom: 24px;
+    display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; border-radius: 6px;
+    font-size: 0.85rem; font-weight: 600; border: 1px solid var(--border-color);
+    background-color: var(--card-bg); margin-bottom: 20px;
   }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #64748b; }
   .status-badge.online .dot { background: #22c55e; }
@@ -105,170 +105,181 @@
   .status-badge.offline .dot { background: #ef4444; }
   .status-badge.offline { border-color: #ef4444; color: #f87171; }
 
-  h1.title {
-    font-size: clamp(2.5rem, 6vw, 3.8rem);
-    font-weight: 800;
-    margin-bottom: 16px;
-    color: var(--primary-yellow);
-    letter-spacing: -0.5px;
-  }
-
-  .subtitle {
-    color: var(--text-muted);
-    font-size: 1.05rem;
-    max-width: 600px;
-    margin: 0 auto 36px;
-  }
+  h1.title { font-size: clamp(2.5rem, 6vw, 3.8rem); font-weight: 800; margin-bottom: 16px; color: var(--primary-yellow); letter-spacing: -0.5px; }
+  .subtitle { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto 30px; }
   .subtitle b { color: var(--text-main); }
 
-  /* IP KUTUSU */
+  /* IP KUTUSU VE KOPYALAMA */
   .ip-box {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 10px 10px 10px 20px;
-    border-radius: 8px;
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: center;
+    padding: 8px 12px 8px 20px; border-radius: 8px; background-color: var(--card-bg);
+    border: 1px solid var(--border-color); margin-bottom: 20px;
   }
   .ip-label { font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 700; letter-spacing: 0.5px;}
-  .ip-value {
-    font-family: monospace;
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--primary-yellow);
+  .ip-value { font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--primary-yellow); }
+  .copy-btn-inline {
+    border: none; cursor: pointer; padding: 8px; border-radius: 6px; color: var(--text-main);
+    background-color: transparent; border: 1px solid var(--border-color);
+    transition: all 0.2s; display: grid; place-items: center;
   }
-  .copy-btn {
-    border: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 700;
-    font-size: 0.9rem;
-    color: #000;
-    background-color: var(--primary-yellow);
-    transition: background-color .2s;
-  }
-  .copy-btn:hover { background-color: #eab308; }
-  .copy-btn.copied { background-color: #22c55e; color: #fff; }
+  .copy-btn-inline:hover { background-color: var(--border-color); }
+  .copy-btn-inline svg { width: 18px; height: 18px; fill: currentColor; }
 
   /* İSTATİSTİK KARTLARI */
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
-    margin: 40px 0;
-  }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 30px 0; }
   .stat {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-top: 3px solid var(--primary-blue);
-    border-radius: 8px;
-    padding: 24px 16px;
-    text-align: center;
+    background-color: var(--card-bg); border: 1px solid var(--border-color); border-top: 3px solid var(--primary-blue);
+    border-radius: 8px; padding: 20px 16px; text-align: center; transition: background-color 0.3s;
   }
   .stat-ico { font-size: 1.5rem; margin-bottom: 8px; }
-  .stat-val {
-    font-size: 1.8rem;
-    font-weight: 800;
-    color: var(--text-main);
-    line-height: 1.2;
-  }
+  .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--text-main); line-height: 1.2; }
   .stat-val.dim { color: var(--text-muted); }
   .stat-lbl { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
-  
-  .stat-note {
-    grid-column: 1 / -1;
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    text-align: center;
-    margin-top: 5px;
-  }
+  .stat-note { grid-column: 1 / -1; font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-top: 5px; }
 
   /* BÖLÜMLER */
-  section { padding: 60px 0; border-top: 1px solid var(--border-color); }
-  .sec-head { text-align: center; margin-bottom: 40px; }
+  section { padding: 50px 0; border-top: 1px solid var(--border-color); }
+  .sec-head { text-align: center; margin-bottom: 30px; }
   .sec-head h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 10px; }
   .sec-head p { color: var(--text-muted); font-size: 0.95rem; }
 
-  /* ÖZELLİKLER */
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-  }
-  .feature {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 24px;
-  }
+  .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+  .feature { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 24px; transition: background-color 0.3s; }
   .feature.star { border-color: var(--primary-yellow); }
   .feature h3 { font-size: 1.1rem; margin-bottom: 8px; color: var(--primary-yellow); }
   .feature p { font-size: 0.9rem; color: var(--text-muted); }
 
-  /* SUNUCU BİLGİLERİ */
-  .info-panel {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 10px 24px;
-  }
-  .info-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border-color);
-  }
+  .info-panel { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px 24px; transition: background-color 0.3s; }
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
   .info-row:last-child { border-bottom: none; }
   .info-key { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); }
   .info-val { font-family: monospace; font-weight: 700; color: var(--text-main); }
   .info-val.highlight { color: var(--primary-yellow); }
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border-color);
-    padding: 30px 0;
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    background-color: #0b1120;
-  }
+  footer { border-top: 1px solid var(--border-color); padding: 30px 0; text-align: center; color: var(--text-muted); font-size: 0.85rem; background-color: var(--nav-bg); transition: background-color 0.3s; }
 
-  /* KORUMA EKRANI */
-  #dt-guard {
-    position: fixed; inset: 0; z-index: 99999;
-    display: none; place-items: center; text-align: center; padding: 30px;
-    background-color: #0f172a; color: #fff;
+  /* MODAL SİSTEMİ (Giriş, Kayıt, Admin) */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    display: none; place-items: center; z-index: 1000; padding: 20px;
   }
-  #dt-guard.show { display: grid; }
-  #dt-guard h1 { color: #ef4444; margin-bottom: 10px; font-size: 1.8rem; }
-  #dt-guard p { color: var(--text-muted); max-width: 400px; }
+  .modal-overlay.active { display: grid; }
+  .modal-box {
+    background-color: var(--card-bg); border: 1px solid var(--border-color);
+    border-radius: 10px; padding: 30px; width: 100%; max-width: 450px;
+    position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: var(--text-main);
+  }
+  .modal-box.wide { max-width: 800px; }
+  .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
+  .close-modal:hover { color: var(--primary-yellow); }
+  
+  .modal-box h2 { font-size: 1.5rem; margin-bottom: 20px; text-align: center; }
+  .form-group { margin-bottom: 15px; position: relative; }
+  .form-group label { display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--text-muted); }
+  .form-group input, .form-group select {
+    width: 100%; padding: 10px 12px; border-radius: 6px; border: 1px solid var(--border-color);
+    background-color: var(--input-bg); color: var(--text-main); font-family: inherit; font-size: 0.95rem;
+  }
+  .form-group input:focus { outline: none; border-color: var(--primary-yellow); }
+  .form-submit {
+    width: 100%; padding: 12px; border-radius: 6px; border: none; cursor: pointer;
+    background-color: var(--primary-yellow); color: #000; font-weight: bold; font-size: 1rem; margin-top: 10px;
+  }
+  .form-submit:hover { opacity: 0.9; }
+  .toggle-form { text-align: center; margin-top: 15px; font-size: 0.9rem; color: var(--text-muted); }
+  .toggle-form button { background: none; border: none; color: var(--primary-yellow); cursor: pointer; font-weight: bold; }
 
-  @media (max-width: 600px) {
+  /* Şifre Göz İkonu */
+  .eye-btn {
+    position: absolute; right: 10px; bottom: 10px; background: none; border: none;
+    cursor: pointer; color: var(--text-muted); padding: 2px;
+  }
+  .eye-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+  /* ADMIN PANEL */
+  .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap;}
+  .admin-tab { padding: 8px 16px; border: none; background: none; color: var(--text-muted); cursor: pointer; font-weight: bold; }
+  .admin-tab.active { color: var(--primary-yellow); border-bottom: 2px solid var(--primary-yellow); }
+  .admin-content { display: none; max-height: 400px; overflow-y: auto; }
+  .admin-content.active { display: block; }
+  
+  table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
+  th, td { padding: 10px; text-align: left; border-bottom: 1px solid var(--border-color); }
+  th { color: var(--text-muted); font-weight: 600; }
+  .btn-sm { padding: 4px 8px; font-size: 0.8rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--border-color); background: var(--input-bg); color: var(--text-main); margin-right: 5px; }
+  .btn-sm:hover { border-color: var(--primary-yellow); }
+  .btn-danger { color: #ef4444; border-color: #ef4444; }
+  .btn-danger:hover { background: #ef4444; color: #fff; }
+
+  /* BAKIM EKRANI */
+  #maintenance-screen {
+    position: fixed; inset: 0; background-color: var(--bg-color); z-index: 9999;
+    display: none; place-items: center; text-align: center; color: var(--text-main);
+  }
+  #maintenance-screen.active { display: grid; }
+  #maintenance-screen h1 { font-size: 3rem; color: var(--primary-yellow); margin-bottom: 15px; }
+  #maintenance-screen p { font-size: 1.2rem; color: var(--text-muted); }
+
+  @media (max-width: 800px) {
     .nav-links { display: none; }
     .ip-box { width: 100%; flex-direction: column; padding: 16px; gap: 12px; }
-    .copy-btn { width: 100%; }
     .stats { grid-template-columns: 1fr; }
+    .modal-box { padding: 20px; }
   }
 </style>
 </head>
 <body>
 
+<!-- BAKIM EKRANI -->
+<div id="maintenance-screen">
+  <div>
+    <h1>🛠️ Bakımdayız!</h1>
+    <p>Sunucumuz şu anda bakım altında. Lütfen daha sonra tekrar deneyin.</p>
+  </div>
+</div>
+
+<!-- NAVBAR -->
 <nav>
   <div class="nav-inner">
     <div class="logo">
       <div class="logo-mark">A</div>
       <span>AgalarlaSW</span>
     </div>
+    
+    <!-- ORTA MENÜ -->
     <div class="nav-links">
-      <a href="#anasayfa">Ana Sayfa</a>
-      <a href="#ozellikler">Özellikler</a>
-      <a href="#bilgiler">Sunucu Bilgileri</a>
+      <a href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Ana Sayfa
+      </a>
+      <a href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg> Mağaza
+      </a>
+      <a href="#" onclick="openProfile()">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Profil
+      </a>
+      <a href="#" onclick="openTransfer()">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 12c0-1.1-.9-2-2-2s-2 .9-2 2 .9 2 2 2 2-.9 2-2zm-2-9c-4.97 0-9 4.03-9 9H0l4 4 4-4H5c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.82 0-3.48-.7-4.73-1.82l-1.42 1.42C7.52 20.17 9.65 21 12 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/></svg> Kredi Gönder
+      </a>
+      <a href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M21 4H3c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H3V6h18v12zM8 10h8v4H8z"/></svg> Kredi
+      </a>
+      <a href="#">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M11 18h2v-2h-2v2zm1-16C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm0-14c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5 0-2.21-1.79-4-4-4z"/></svg> Destek Talebi
+      </a>
+    </div>
+
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 Koyu</button>
+      <div id="auth-buttons">
+        <button class="login-btn" onclick="openModal('loginModal')">Giriş Yap</button>
+        <button class="login-btn" style="background:var(--primary-yellow); color:#000;" onclick="openModal('registerModal')">Kayıt Ol</button>
+      </div>
+      <div id="user-info" style="display:none; align-items:center; gap:10px;">
+        <span id="nav-username" style="font-weight:bold; color:var(--primary-yellow);"></span>
+        <span id="nav-kredi" style="font-size:0.8rem; background:var(--border-color); padding:2px 8px; border-radius:10px;">0 Kredi</span>
+        <button class="login-btn" onclick="openAdminPanel()" id="adminBtn" style="display:none; background:#ef4444; color:#fff;">Admin</button>
+        <button class="login-btn" onclick="logout()">Çıkış</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -280,18 +291,16 @@
   </div>
 
   <h1 class="title">AgalarlaSW</h1>
-
-  <p class="subtitle">
-    Arkadaşlarınla oynayabileceğin, tamamen <b>SMP (Survival Multiplayer)</b> odaklı, 
-    <b>Ametis Eşyalar</b> ve özel etkinlikler barındıran Türk Minecraft sunucusu.
-  </p>
+  <p class="subtitle">Arkadaşlarınla oynayabileceğin, tamamen <b>SMP</b> odaklı, <b>Ametis Eşyalar</b> ve özel etkinlikler barındıran Türk Minecraft sunucusu.</p>
 
   <div class="ip-box">
     <div>
       <div class="ip-label">Sunucu IP Adresi</div>
-      <div class="ip-value" id="ipValue">AgalarlaSW.aternos.me</div>
+      <div class="ip-value">AgalarlaSW.aternos.me</div>
     </div>
-    <button class="copy-btn" id="copyBtn" onclick="copyIP()">IP Kopyala</button>
+    <button class="copy-btn-inline" onclick="copyIP(this)" title="Kopyala">
+      <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+    </button>
   </div>
 </header>
 
@@ -309,8 +318,7 @@
     </div>
     <div class="stat">
       <div class="stat-ico">🎮</div>
-      <!-- Sürüm yazısının olduğu kısım -->
-      <div class="stat-val dim" id="versionStat" style="font-size: 1.2rem;">1.16.5-26.3</div>
+      <div class="stat-val dim" style="font-size: 1.2rem;">1.16.5-26.3</div>
     </div>
     <div class="stat-note">Oyuncu sayısı her 30 saniyede bir otomatik güncellenir.</div>
   </div>
@@ -322,23 +330,19 @@
       <h2>Sunucu Özellikleri</h2>
       <p>AgalarlaSW'de seni bekleyenler</p>
     </div>
-
     <div class="features">
       <div class="feature star">
         <h3>💎 Ametis Eşyalar</h3>
-        <p>Sunucuya özel Ametis <b>Kazma, Balta ve Kürek</b>! Ametis Kazma ile 3x3 kazı yap, Ametis Balta ile ağaçları devir, rakiplerinin önüne geç.</p>
+        <p>Sunucuya özel Ametis <b>Kazma, Balta ve Kürek</b>! Ametis Kazma ile 3x3 kazı yap, rakiplerinin önüne geç.</p>
       </div>
-
       <div class="feature">
         <h3>🎉 Çekilişler & Etkinlikler</h3>
         <p>Sunucu içi ve etkinliklerdeki çekilişlere katılarak <b>Ametis eşyalar</b> ve özel ödüller kazanma şansı yakala.</p>
       </div>
-
       <div class="feature">
         <h3>🛡️ Aktif Yetkililer</h3>
         <p>Sunucuda her zaman aktif olan yetkililerimiz bulunur. Sorunlarınızda ve ihtiyaçlarınızda size hızlıca yardımcı olurlar.</p>
       </div>
-      
       <div class="feature">
         <h3>🌲 Saf SMP Deneyimi</h3>
         <p>Hile, haksız rekabet veya gereksiz eklentiler yok. Tamamen survival odaklı, temiz ve adil bir oyun ortamı.</p>
@@ -353,7 +357,6 @@
       <h2>Sunucu Bilgileri</h2>
       <p>Minecraft'a gir ve aşağıdaki bilgilerle bağlan</p>
     </div>
-
     <div class="info-panel">
       <div class="info-row">
         <span class="info-key">Sunucu Adı</span>
@@ -376,76 +379,507 @@
 </section>
 
 <footer>
-  <div class="wrap">
-    <b>AgalarlaSW</b> — Arkadaşlarla oynanan SMP sunucusu
-  </div>
+  <div class="wrap"><b>AgalarlaSW</b> — Arkadaşlarla oynanan SMP sunucusu</div>
 </footer>
 
-<!-- KORUMA EKRANI -->
-<div id="dt-guard">
+<!-- ================= MODALLAR ================= -->
+
+<!-- GİRİŞ YAP MODALI -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal('loginModal')">×</button>
+    <h2>Giriş Yap</h2>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Kullanıcı Adı</label>
+        <input type="text" id="loginUser" required>
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="loginPass" required>
+        <button type="button" class="eye-btn" onclick="togglePassword('loginPass', this)">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </button>
+      </div>
+      <button type="submit" class="form-submit">Giriş Yap</button>
+    </form>
+    <div class="toggle-form">
+      Hesabın yok mu? <button onclick="switchModal('loginModal', 'registerModal')">Kayıt Ol</button>
+    </div>
+  </div>
+</div>
+
+<!-- KAYIT OL MODALI -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal('registerModal')">×</button>
+    <h2>Kayıt Ol</h2>
+    <form onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label>Kullanıcı Adı (Minecraft)</label>
+        <input type="text" id="regUser" required>
+      </div>
+      <div class="form-group">
+        <label>E-mail <span style="font-size:0.75rem; color:var(--text-muted);">(Minecraft'tan kayıtlıysanız boş bırakın)</span></label>
+        <input type="email" id="regEmail">
+      </div>
+      <div class="form-group">
+        <label>Şifre</label>
+        <input type="password" id="regPass" required>
+        <button type="button" class="eye-btn" onclick="togglePassword('regPass', this)">
+          <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+        </button>
+      </div>
+      <div class="form-group">
+        <label>Şifre (Tekrar)</label>
+        <input type="password" id="regPass2" required>
+      </div>
+      <button type="submit" class="form-submit">Kayıt Ol</button>
+    </form>
+    <div class="toggle-form">
+      Zaten hesabın var mı? <button onclick="switchModal('registerModal', 'loginModal')">Giriş Yap</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFİL MODALI -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal('profileModal')">×</button>
+    <h2>Profil Bilgileri</h2>
+    <div style="text-align:center; margin-bottom:20px;">
+      <div style="font-size:4rem;">👤</div>
+      <h3 id="profUsername" style="color:var(--primary-yellow); font-size:1.5rem;">Kullanıcı</h3>
+      <p style="color:var(--text-muted); font-size:0.9rem;" id="profRole">Rol</p>
+    </div>
+    <div class="info-panel">
+      <div class="info-row">
+        <span class="info-key">Kredi Bakiyesi</span>
+        <span class="info-val highlight" id="profKredi">0</span>
+      </div>
+      <div class="info-row">
+        <span class="info-key">E-posta</span>
+        <span class="info-val" id="profEmail">-</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- KREDİ GÖNDER MODALI -->
+<div class="modal-overlay" id="transferModal">
+  <div class="modal-box">
+    <button class="close-modal" onclick="closeModal('transferModal')">×</button>
+    <h2>Kredi Gönder</h2>
+    <form onsubmit="handleTransfer(event)">
+      <div class="form-group">
+        <label>Alıcı Kullanıcı Adı</label>
+        <input type="text" id="transferTarget" required>
+      </div>
+      <div class="form-group">
+        <label>Gönderilecek Miktar</label>
+        <input type="number" id="transferAmount" min="1" required>
+      </div>
+      <button type="submit" class="form-submit">Gönder</button>
+    </form>
+  </div>
+</div>
+
+<!-- ADMİN PANELİ MODALI -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-box wide">
+    <button class="close-modal" onclick="closeModal('adminModal')">×</button>
+    <h2>Yönetici Paneli</h2>
+    <div class="admin-tabs">
+      <button class="admin-tab active" onclick="switchAdminTab('usersTab', this)">Kullanıcılar & Yetki</button>
+      <button class="admin-tab" onclick="switchAdminTab('settingsTab', this)">Site Ayarları</button>
+      <button class="admin-tab" onclick="switchAdminTab('announceTab', this)">Duyuru Ekle</button>
+    </div>
+
+    <!-- KULLANICI YÖNETİMİ -->
+    <div id="usersTab" class="admin-content active">
+      <table>
+        <thead>
+          <tr>
+            <th>Kullanıcı Adı</th>
+            <th>Rol</th>
+            <th>Kredi</th>
+            <th>İşlemler</th>
+          </tr>
+        </thead>
+        <tbody id="adminUserList">
+          <!-- JS ile doldurulacak -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- SİTE AYARLARI -->
+    <div id="settingsTab" class="admin-content">
+      <h3 style="margin-bottom:15px;">Bakım Modu</h3>
+      <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:15px;">Bakım modu açıldığında sadece yetkililer siteye girebilir.</p>
+      <button class="form-submit" id="maintenanceBtn" onclick="toggleMaintenance()" style="width:200px; background:#ef4444; color:#fff;">Bakım Modunu Aç</button>
+    </div>
+
+    <!-- DUYURU EKLE -->
+    <div id="announceTab" class="admin-content">
+      <form onsubmit="handleAddAnnouncement(event)">
+        <div class="form-group">
+          <label>Duyuru Başlığı</label>
+          <input type="text" id="annTitle" required>
+        </div>
+        <div class="form-group">
+          <label>Duyuru İçeriği</label>
+          <input type="text" id="annContent" required>
+        </div>
+        <button type="submit" class="form-submit">Duyuru Yayınla</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SİTE KORUMA EKRANI -->
+<div id="dt-guard" style="position:fixed; inset:0; z-index:99999; display:none; place-items:center; text-align:center; padding:30px; background:#0f172a; color:#fff;">
   <div>
-    <h1>Erişim Engellendi</h1>
-    <p>Sayfa kaynak kodunu incelemek engellenmiştir. Lütfen geliştirici araçlarını kapatın.</p>
+    <h1 style="color:#ef4444; margin-bottom:10px; font-size:1.8rem;">Erişim Engellendi</h1>
+    <p style="color:#94a3b8; max-width:400px;">Sayfa kaynak kodunu incelemek engellenmiştir. Lütfen geliştirici araçlarını kapatın.</p>
   </div>
 </div>
 
 <script>
 /* ==========================================
-   AYARLAR
+   VERİTABANI (LOCAL STORAGE) SİMÜLASYONU
    ========================================== */
-const CONFIG = {
-  displayIp: "AgalarlaSW.aternos.me",
-  queryIp: "AgalarlaSW.aternos.me:45913",
-  customVersion: "1.16.5-26.3",
-  refreshMs: 30000 // 30 Saniye
-};
+// İlk kurulum
+if (!localStorage.getItem('site_users')) {
+  const initialUsers = [
+    { username: "SMD_Samet", email: "admin@site.com", password: "064306", role: "Kurucu", kredi: 9999 }
+  ];
+  localStorage.setItem('site_users', JSON.stringify(initialUsers));
+}
+if (!localStorage.getItem('site_maintenance')) {
+  localStorage.setItem('site_maintenance', 'false');
+}
+if (!localStorage.getItem('site_announcements')) {
+  localStorage.setItem('site_announcements', JSON.stringify([]));
+}
 
+// Global Değişkenler
+let currentUser = null;
+let isLightTheme = localStorage.getItem('site_theme') === 'light';
 const el = (id) => document.getElementById(id);
 
-// Ekranda portsuz IP göster
-el("ipValue").textContent = CONFIG.displayIp;
-
-// Sürüm yazısını özel olarak sabitle
-el("versionStat").textContent = CONFIG.customVersion;
-
-/* IP KOPYALAMA (Portlu kopyalar) */
-function copyIP() {
-  const btn = el("copyBtn");
-  const done = () => {
-    btn.textContent = "Kopyalandı!";
-    btn.classList.add("copied");
-    setTimeout(() => {
-      btn.textContent = "IP Kopyala";
-      btn.classList.remove("copied");
-    }, 1800);
-  };
-
-  if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(CONFIG.queryIp).then(done).catch(fallbackCopy);
+/* ==========================================
+   TEMA İŞLEMLERİ
+   ========================================== */
+function applyTheme() {
+  if (isLightTheme) {
+    document.documentElement.setAttribute('data-theme', 'light');
+    el('themeBtn').innerHTML = '☀️ Açık';
   } else {
-    fallbackCopy();
+    document.documentElement.removeAttribute('data-theme');
+    el('themeBtn').innerHTML = '🌙 Koyu';
+  }
+}
+function toggleTheme() {
+  isLightTheme = !isLightTheme;
+  localStorage.setItem('site_theme', isLightTheme ? 'light' : 'dark');
+  applyTheme();
+}
+applyTheme();
+
+/* ==========================================
+   BAKIM MODU KONTROLÜ
+   ========================================== */
+function checkMaintenance() {
+  const isMaint = localStorage.getItem('site_maintenance') === 'true';
+  const userStr = localStorage.getItem('site_current_user');
+  
+  let isAuthorized = false;
+  if (userStr) {
+    const u = JSON.parse(userStr);
+    if (u.role === 'Kurucu' || u.role === 'Yönetici') isAuthorized = true;
   }
 
-  function fallbackCopy() {
-    const ta = document.createElement("textarea");
-    ta.value = CONFIG.queryIp;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand("copy"); done(); } catch (e) { alert("IP: " + CONFIG.queryIp); }
-    document.body.removeChild(ta);
+  if (isMaint && !isAuthorized) {
+    el('maintenance-screen').classList.add('active');
+  } else {
+    el('maintenance-screen').classList.remove('active');
   }
 }
 
-/* DURUM GÜNCELLEME */
+/* ==========================================
+   KULLANICI OTURUM İŞLEMLERİ
+   ========================================== */
+function checkAuth() {
+  const userStr = localStorage.getItem('site_current_user');
+  if (userStr) {
+    currentUser = JSON.parse(userStr);
+    el('auth-buttons').style.display = 'none';
+    el('user-info').style.display = 'flex';
+    el('nav-username').textContent = currentUser.username;
+    el('nav-kredi').textContent = currentUser.kredi + " Kredi";
+    
+    if (currentUser.role === 'Kurucu' || currentUser.role === 'Yönetici') {
+      el('adminBtn').style.display = 'inline-block';
+    } else {
+      el('adminBtn').style.display = 'none';
+    }
+  } else {
+    currentUser = null;
+    el('auth-buttons').style.display = 'flex';
+    el('user-info').style.display = 'none';
+  }
+  checkMaintenance();
+}
+
+function handleLogin(e) {
+  e.preventDefault();
+  const user = el('loginUser').value.trim();
+  const pass = el('loginPass').value;
+
+  const users = JSON.parse(localStorage.getItem('site_users'));
+  const found = users.find(u => u.username.toLowerCase() === user.toLowerCase() && u.password === pass);
+
+  if (found) {
+    localStorage.setItem('site_current_user', JSON.stringify(found));
+    closeModal('loginModal');
+    checkAuth();
+    alert("Giriş başarılı! Hoş geldin " + found.username);
+  } else {
+    alert("Hatalı kullanıcı adı veya şifre!");
+  }
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const user = el('regUser').value.trim();
+  const email = el('regEmail').value.trim();
+  const pass = el('regPass').value;
+  const pass2 = el('regPass2').value;
+
+  if (pass !== pass2) return alert("Şifreler uyuşmuyor!");
+
+  const users = JSON.parse(localStorage.getItem('site_users'));
+  if (users.find(u => u.username.toLowerCase() === user.toLowerCase())) {
+    return alert("Bu kullanıcı adı sitede zaten alınmış!");
+  }
+
+  const newUser = { username: user, email: email || "-", password: pass, role: "Üye", kredi: 0 };
+  users.push(newUser);
+  localStorage.setItem('site_users', JSON.stringify(users));
+  
+  alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+  switchModal('registerModal', 'loginModal');
+}
+
+function logout() {
+  localStorage.removeItem('site_current_user');
+  checkAuth();
+}
+
+/* ==========================================
+   MODAL VE ARAYÜZ İŞLEMLERİ
+   ========================================== */
+function openModal(id) { el(id).classList.add('active'); }
+function closeModal(id) { el(id).classList.remove('active'); }
+function switchModal(closeId, openId) {
+  closeModal(closeId);
+  openModal(openId);
+}
+
+// Şifre Gösterme
+function togglePassword(inputId, btn) {
+  const input = el(inputId);
+  if (input.type === "password") {
+    input.type = "text";
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/></svg>';
+  } else {
+    input.type = "password";
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>';
+  }
+}
+
+// Profil Modalı
+function openProfile() {
+  if (!currentUser) return alert("Lütfen önce giriş yapın.");
+  el('profUsername').textContent = currentUser.username;
+  el('profRole').textContent = currentUser.role;
+  el('profKredi').textContent = currentUser.kredi;
+  el('profEmail').textContent = currentUser.email || "-";
+  openModal('profileModal');
+}
+
+// Kredi Gönderme
+function openTransfer() {
+  if (!currentUser) return alert("Lütfen önce giriş yapın.");
+  openModal('transferModal');
+}
+
+function handleTransfer(e) {
+  e.preventDefault();
+  const targetName = el('transferTarget').value.trim();
+  const amount = parseInt(el('transferAmount').value);
+
+  if (amount <= 0 || amount > currentUser.kredi) return alert("Geçersiz miktar veya yetersiz bakiye!");
+
+  let users = JSON.parse(localStorage.getItem('site_users'));
+  const targetIndex = users.findIndex(u => u.username.toLowerCase() === targetName.toLowerCase());
+
+  if (targetIndex === -1) return alert("Böyle bir kullanıcı bulunamadı!");
+  if (users[targetIndex].username === currentUser.username) return alert("Kendinize kredi gönderemezsiniz!");
+
+  // Krediyi düş ve ekle
+  users.find(u => u.username === currentUser.username).kredi -= amount;
+  users[targetIndex].kredi += amount;
+  
+  localStorage.setItem('site_users', JSON.stringify(users));
+  
+  // Oturumu güncelle
+  const updatedCurrent = users.find(u => u.username === currentUser.username);
+  localStorage.setItem('site_current_user', JSON.stringify(updatedCurrent));
+  
+  closeModal('transferModal');
+  checkAuth();
+  alert(`${targetName} adlı kullanıcıya ${amount} kredi gönderildi.`);
+}
+
+/* ==========================================
+   ADMİN PANELİ İŞLEMLERİ
+   ========================================== */
+function openAdminPanel() {
+  if (currentUser.role !== 'Kurucu' && currentUser.role !== 'Yönetici') return;
+  renderAdminUsers();
+  renderSettings();
+  openModal('adminModal');
+}
+
+function switchAdminTab(tabId, btn) {
+  document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+  el(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function renderAdminUsers() {
+  const users = JSON.parse(localStorage.getItem('site_users'));
+  const tbody = el('adminUserList');
+  tbody.innerHTML = "";
+
+  users.forEach(u => {
+    // Kendinden üstünü veya kendini düzenleme engeli
+    let canEdit = false;
+    if (currentUser.role === 'Kurucu' && u.username !== currentUser.username) canEdit = true;
+    if (currentUser.role === 'Yönetici' && u.role === 'Üye') canEdit = true;
+
+    const roleSelect = `
+      <select onchange="changeRole('${u.username}', this.value)" ${canEdit ? '' : 'disabled'} style="padding:2px; background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color);">
+        <option value="Üye" ${u.role === 'Üye' ? 'selected' : ''}>Üye</option>
+        <option value="Yönetici" ${u.role === 'Yönetici' ? 'selected' : ''}>Yönetici</option>
+        <option value="Kurucu" ${u.role === 'Kurucu' ? 'selected' : ''}>Kurucu</option>
+      </select>
+    `;
+
+    const krediBtns = canEdit ? `
+      <button class="btn-sm" onclick="editKredi('${u.username}', 100)">+100 Kredi</button>
+      <button class="btn-sm btn-danger" onclick="editKredi('${u.username}', -100)">-100 Kredi</button>
+    ` : `<span style="font-size:0.75rem; color:var(--text-muted);">Yetki Yok</span>`;
+
+    tbody.innerHTML += `
+      <tr>
+        <td style="font-weight:bold; color:var(--primary-yellow);">${u.username}</td>
+        <td>${roleSelect}</td>
+        <td>${u.kredi}</td>
+        <td>${krediBtns}</td>
+      </tr>
+    `;
+  });
+}
+
+function changeRole(username, newRole) {
+  let users = JSON.parse(localStorage.getItem('site_users'));
+  const user = users.find(u => u.username === username);
+  
+  if (!user) return;
+  
+  // Güvenlik Kontrolü
+  if (currentUser.role === 'Yönetici' && newRole !== 'Üye') {
+    alert("Yönetici sadece üye yetkisi verebilir!");
+    renderAdminUsers(); return;
+  }
+  if (currentUser.role === 'Kurucu' && newRole === 'Kurucu' && user.username !== currentUser.username) {
+    alert("Başka birini Kurucu yapamazsınız!");
+    renderAdminUsers(); return;
+  }
+
+  user.role = newRole;
+  localStorage.setItem('site_users', JSON.stringify(users));
+  renderAdminUsers();
+}
+
+function editKredi(username, amount) {
+  let users = JSON.parse(localStorage.getItem('site_users'));
+  const user = users.find(u => u.username === username);
+  if (user) {
+    user.kredi += amount;
+    if (user.kredi < 0) user.kredi = 0;
+    localStorage.setItem('site_users', JSON.stringify(users));
+    renderAdminUsers();
+  }
+}
+
+function renderSettings() {
+  const isMaint = localStorage.getItem('site_maintenance') === 'true';
+  const btn = el('maintenanceBtn');
+  
+  if (currentUser.role === 'Kurucu') {
+    btn.disabled = false;
+    if (isMaint) {
+      btn.textContent = "Bakım Modunu Kapat";
+      btn.style.background = "#22c55e";
+    } else {
+      btn.textContent = "Bakım Modunu Aç";
+      btn.style.background = "#ef4444";
+    }
+  } else {
+    btn.disabled = true;
+    btn.textContent = "Sadece Kurucu Bakıma Alabilir";
+    btn.style.background = "#64748b";
+  }
+}
+
+function toggleMaintenance() {
+  if (currentUser.role !== 'Kurucu') return alert("Sadece Kurucu bakım modunu değiştirebilir!");
+  const isMaint = localStorage.getItem('site_maintenance') === 'true';
+  localStorage.setItem('site_maintenance', isMaint ? 'false' : 'true');
+  renderSettings();
+  checkMaintenance();
+  alert(isMaint ? "Bakım Modu Kapatıldı!" : "Bakım Modu Açıldı!");
+}
+
+function handleAddAnnouncement(e) {
+  e.preventDefault();
+  const title = el('annTitle').value;
+  const content = el('annContent').value;
+  let anns = JSON.parse(localStorage.getItem('site_announcements'));
+  anns.push({ title, content, date: new Date().toLocaleString() });
+  localStorage.setItem('site_announcements', JSON.stringify(anns));
+  el('annTitle').value = ''; el('annContent').value = '';
+  alert("Duyuru başarıyla eklendi!");
+}
+
+/* ==========================================
+   API VE SUNUCU DURUMU (Hata Korumalı)
+   ========================================== */
+const CONFIG = {
+  queryIp: "AgalarlaSW.aternos.me:45913",
+  refreshMs: 30000
+};
+
 function setStatus(state, playerCount) {
   const pill = el("statusPill");
   const text = el("statusText");
   const maxCap = 50;
 
   pill.classList.remove("online", "offline");
-
   if (state === "online") {
     pill.classList.add("online");
     text.textContent = "Sunucu Çevrimiçi";
@@ -462,76 +896,52 @@ function setStatus(state, playerCount) {
     el("maxPlayers").textContent = maxCap;
     el("infoStatus").textContent = "Çevrimdışı";
     el("infoStatus").style.color = "#f87171";
-  } else {
-    text.textContent = "Durum Alınamadı";
-    el("playerCount").textContent = "?";
-    el("playerCount").classList.add("dim");
-    el("maxPlayers").textContent = maxCap;
-    el("infoStatus").textContent = "Bilgi alınamadı";
-    el("infoStatus").style.color = "#eab308";
+  }
+}
+
+async function fetchStatus() {
+  try {
+    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${Date.now()}`, { cache: "no-store" });
+    const data = await res.json();
+    
+    if (data.online) {
+      setStatus("online", data.players?.online);
+    } else {
+      setStatus("offline"); 
+    }
+  } catch (err) {
+    console.warn("API Hatası:", err);
   }
 }
 
 /* ==========================================
-   API İSTEĞİ (Çoklu API - Paralel Sorgu)
+   KOPYALAMA VE KORUMA
    ========================================== */
-async function fetchStatus() {
-  const timestamp = Date.now();
-  const encodedIp = encodeURIComponent(CONFIG.queryIp);
-
-  // Kullanılabilir API uç noktaları
-  const endpoints = [
-    `https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`,
-    `https://api.mcsrvstat.us/3/${CONFIG.queryIp}?t=${timestamp}`,
-    `https://api.gamemonitoring.de/servers/status?ip=${encodedIp}&t=${timestamp}`
-  ];
-
-  try {
-    // Tüm API'lere aynı anda istek at, ilk başarılı yanıtı al
-    const firstSuccess = await Promise.any(
-      endpoints.map(url => 
-        fetch(url, { cache: "no-store" })
-          .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-          .then(data => {
-            // API'ye göre farklı alan isimleri kontrol et
-            if (data.online !== undefined) return { online: data.online, players: data.players?.online };
-            if (data.status !== undefined) return { online: data.status, players: data.numplayers };
-            throw new Error("Geçersiz format");
-          })
-      )
-    );
-
-    if (firstSuccess.online) {
-      setStatus("online", firstSuccess.players);
-    } else {
-      setStatus("offline");
-    }
-  } catch (err) {
-    // Tüm API'ler başarısız olduysa
-    console.warn("Tüm API'lerden yanıt alınamadı:", err);
-    setStatus("error");
-  }
+function copyIP(btn) {
+  const ip = "AgalarlaSW.aternos.me";
+  navigator.clipboard.writeText(ip).then(() => {
+    const originalHTML = btn.innerHTML;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="fill:#22c55e;"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>';
+    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+  });
 }
 
-// İlk çalıştırma ve döngü
+// Başlangıç Fonksiyonları
+checkAuth();
 fetchStatus();
 setInterval(fetchStatus, CONFIG.refreshMs);
 
-/* ==========================================
-   SİTE KORUMA KATMANI
-   ========================================== */
+// F12 KORUMASI
 (function () {
   "use strict";
   const guard = document.getElementById("dt-guard");
   let shown = false;
-
   function showGuard() {
     if (shown) return;
     shown = true;
-    guard.classList.add("show");
+    guard.style.display = "grid";
     document.body.style.overflow = "hidden";
   }
-
   document.addEventListener("keydown", function (e) {
     const key = (e.key || "").toUpperCase();
     if (e.key === "F12" || 
@@ -541,13 +951,10 @@ setInterval(fetchStatus, CONFIG.refreshMs);
       e.preventDefault(); showGuard(); return false;
     }
   }, true);
-
   document.addEventListener("contextmenu", function (e) { e.preventDefault(); return false; }, true);
-
   ["dragstart","copy","cut","paste"].forEach(function (evt) {
     document.addEventListener(evt, function (e) { e.preventDefault(); }, true);
   });
-
   window.addEventListener("beforeprint", function () { showGuard(); });
 })();
 </script>
