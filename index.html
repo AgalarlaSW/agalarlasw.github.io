@@ -389,9 +389,11 @@
 </div>
 
 <script>
-/* AYARLAR */
+/* ==========================================
+   AYARLAR
+   ========================================== */
 const CONFIG = {
-  // Sitede görünecek temiz IP (Portsuz)
+  // Sitede görünen adres (Portsuz)
   displayIp: "AgalarlaSW.aternos.me",
   
   // API'ye sorulacak tam adres (Portlu)
@@ -473,35 +475,50 @@ function setStatus(state, playerCount, version) {
   }
 }
 
-/* API İSTEĞİ (Aternos uyumlu tam portlu sorgu) */
+/* ==========================================
+   API İSTEĞİ (ÇİFT API SİSTEMİ)
+   1. mcsrvstat.us dener. Başarısızsa;
+   2. mcstatus.io dener.
+   ========================================== */
 async function fetchStatus() {
+  const timestamp = Date.now();
+  
   try {
-    // Doğrudan tam IP:Port ile sorguluyoruz. Önbelleği kırmak için t= parametresi ekliyoruz.
-    const apiUrl = "https://api.mcsrvstat.us/3/" + CONFIG.queryIp + "?t=" + Date.now();
-    
-    const res = await fetch(apiUrl, { cache: "no-store" });
-    
-    if (!res.ok) throw new Error("API hatası");
-    const data = await res.json();
+    // 1. API: mcsrvstat.us
+    let res = await fetch(`https://api.mcsrvstat.us/3/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
+    let data = await res.json();
 
-    // Eğer API'den online: true dönerse
     if (data.online) {
       setStatus("online", data.players?.online, data.version);
-    } else {
-      setStatus("offline");
+      return; // Başarılıysa diğer API'yi denemeye gerek yok
     }
+
+    // 2. API: mcstatus.io (Eğer 1. API offline dediyse buraya düşer)
+    res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
+    data = await res.json();
+
+    if (data.online) {
+      const ver = data.version?.name_clean || data.version?.name || "—";
+      setStatus("online", data.players?.online, ver);
+      return;
+    }
+
+    // İkisi de offline dediyse sunucu gerçekten kapalıdır
+    setStatus("offline");
+
   } catch (err) {
-    console.warn("Sunucu durumu alınamadı:", err);
+    console.warn("API'lerden yanıt alınamadı:", err);
     setStatus("error");
   }
 }
 
+// İlk çalıştırma ve döngü
 fetchStatus();
 setInterval(fetchStatus, CONFIG.refreshMs);
 
-/* ============================================================
+/* ==========================================
    SİTE KORUMA KATMANI
-   ============================================================ */
+   ========================================== */
 (function () {
   "use strict";
   const guard = document.getElementById("dt-guard");
