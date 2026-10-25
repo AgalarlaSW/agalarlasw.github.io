@@ -79,9 +79,7 @@
   }
   .nav-links a:hover, .nav-btn:hover { color: var(--primary-yellow); }
   
-  /* SVG İkon Boyutları */
   .nav-icon { width: 18px; height: 18px; fill: currentColor; }
-
   .nav-right { display: flex; align-items: center; gap: 15px; }
   
   .theme-toggle, .login-btn {
@@ -158,7 +156,7 @@
 
   footer { border-top: 1px solid var(--border-color); padding: 30px 0; text-align: center; color: var(--text-muted); font-size: 0.85rem; background-color: var(--nav-bg); transition: background-color 0.3s; }
 
-  /* MODAL SİSTEMİ (Giriş, Kayıt, Admin) */
+  /* MODAL SİSTEMİ */
   .modal-overlay {
     position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
     display: none; place-items: center; z-index: 1000; padding: 20px;
@@ -169,7 +167,7 @@
     border-radius: 10px; padding: 30px; width: 100%; max-width: 450px;
     position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); color: var(--text-main);
   }
-  .modal-box.wide { max-width: 800px; }
+  .modal-box.wide { max-width: 850px; }
   .close-modal { position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
   .close-modal:hover { color: var(--primary-yellow); }
   
@@ -200,7 +198,7 @@
   .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; flex-wrap: wrap;}
   .admin-tab { padding: 8px 16px; border: none; background: none; color: var(--text-muted); cursor: pointer; font-weight: bold; }
   .admin-tab.active { color: var(--primary-yellow); border-bottom: 2px solid var(--primary-yellow); }
-  .admin-content { display: none; max-height: 400px; overflow-y: auto; }
+  .admin-content { display: none; max-height: 450px; overflow-y: auto; }
   .admin-content.active { display: block; }
   
   table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.9rem; }
@@ -277,7 +275,7 @@
       <div id="user-info" style="display:none; align-items:center; gap:10px;">
         <span id="nav-username" style="font-weight:bold; color:var(--primary-yellow);"></span>
         <span id="nav-kredi" style="font-size:0.8rem; background:var(--border-color); padding:2px 8px; border-radius:10px;">0 Kredi</span>
-        <button class="login-btn" onclick="openAdminPanel()" id="adminBtn" style="display:none; background:#ef4444; color:#fff;">Admin</button>
+        <button class="login-btn" onclick="openAdminPanel()" id="adminBtn" style="display:none; background:#ef4444; color:#fff;">Admin Paneli</button>
         <button class="login-btn" onclick="logout()">Çıkış</button>
       </div>
     </div>
@@ -382,7 +380,7 @@
   <div class="wrap"><b>AgalarlaSW</b> — Arkadaşlarla oynanan SMP sunucusu</div>
 </footer>
 
-<!-- ================= MODALLAR ================= -->
+<!-- MODALLAR -->
 
 <!-- GİRİŞ YAP MODALI -->
 <div class="modal-overlay" id="loginModal">
@@ -420,7 +418,7 @@
         <input type="text" id="regUser" required>
       </div>
       <div class="form-group">
-        <label>E-mail <span style="font-size:0.75rem; color:var(--text-muted);">(Minecraft'tan kayıtlıysanız boş bırakın)</span></label>
+        <label>E-mail <span style="font-size:0.75rem; color:var(--text-muted);">(İsteğe Bağlı)</span></label>
         <input type="email" id="regEmail">
       </div>
       <div class="form-group">
@@ -501,7 +499,7 @@
         <thead>
           <tr>
             <th>Kullanıcı Adı</th>
-            <th>Rol</th>
+            <th>Rütbe</th>
             <th>Kredi</th>
             <th>İşlemler</th>
           </tr>
@@ -546,9 +544,24 @@
 
 <script>
 /* ==========================================
+   RÜTBE HİYERARŞİSİ (Büyük sayı = Daha yetkili)
+   ========================================== */
+const RANK_LEVELS = {
+  "Kurucu": 10,
+  "Yönetici": 9,
+  "Moderatör": 8,
+  "Admin": 7,
+  "Rehber": 6,
+  "D.Rehber": 5,
+  "Medya": 4,
+  "MVIP": 3,
+  "VIP": 2,
+  "Oyuncu": 1
+};
+
+/* ==========================================
    VERİTABANI (LOCAL STORAGE) SİMÜLASYONU
    ========================================== */
-// İlk kurulum
 if (!localStorage.getItem('site_users')) {
   const initialUsers = [
     { username: "SMD_Samet", email: "admin@site.com", password: "064306", role: "Kurucu", kredi: 9999 }
@@ -562,7 +575,6 @@ if (!localStorage.getItem('site_announcements')) {
   localStorage.setItem('site_announcements', JSON.stringify([]));
 }
 
-// Global Değişkenler
 let currentUser = null;
 let isLightTheme = localStorage.getItem('site_theme') === 'light';
 const el = (id) => document.getElementById(id);
@@ -618,6 +630,7 @@ function checkAuth() {
     el('nav-username').textContent = currentUser.username;
     el('nav-kredi').textContent = currentUser.kredi + " Kredi";
     
+    // Sadece Kurucu ve Yönetici Admin Butonunu Görebilir
     if (currentUser.role === 'Kurucu' || currentUser.role === 'Yönetici') {
       el('adminBtn').style.display = 'inline-block';
     } else {
@@ -663,7 +676,7 @@ function handleRegister(e) {
     return alert("Bu kullanıcı adı sitede zaten alınmış!");
   }
 
-  const newUser = { username: user, email: email || "-", password: pass, role: "Üye", kredi: 0 };
+  const newUser = { username: user, email: email || "-", password: pass, role: "Oyuncu", kredi: 0 };
   users.push(newUser);
   localStorage.setItem('site_users', JSON.stringify(users));
   
@@ -686,7 +699,6 @@ function switchModal(closeId, openId) {
   openModal(openId);
 }
 
-// Şifre Gösterme
 function togglePassword(inputId, btn) {
   const input = el(inputId);
   if (input.type === "password") {
@@ -698,7 +710,6 @@ function togglePassword(inputId, btn) {
   }
 }
 
-// Profil Modalı
 function openProfile() {
   if (!currentUser) return alert("Lütfen önce giriş yapın.");
   el('profUsername').textContent = currentUser.username;
@@ -708,7 +719,6 @@ function openProfile() {
   openModal('profileModal');
 }
 
-// Kredi Gönderme
 function openTransfer() {
   if (!currentUser) return alert("Lütfen önce giriş yapın.");
   openModal('transferModal');
@@ -727,13 +737,10 @@ function handleTransfer(e) {
   if (targetIndex === -1) return alert("Böyle bir kullanıcı bulunamadı!");
   if (users[targetIndex].username === currentUser.username) return alert("Kendinize kredi gönderemezsiniz!");
 
-  // Krediyi düş ve ekle
   users.find(u => u.username === currentUser.username).kredi -= amount;
   users[targetIndex].kredi += amount;
   
   localStorage.setItem('site_users', JSON.stringify(users));
-  
-  // Oturumu güncelle
   const updatedCurrent = users.find(u => u.username === currentUser.username);
   localStorage.setItem('site_current_user', JSON.stringify(updatedCurrent));
   
@@ -746,6 +753,7 @@ function handleTransfer(e) {
    ADMİN PANELİ İŞLEMLERİ
    ========================================== */
 function openAdminPanel() {
+  // Sadece Kurucu ve Yönetici erişebilir
   if (currentUser.role !== 'Kurucu' && currentUser.role !== 'Yönetici') return;
   renderAdminUsers();
   renderSettings();
@@ -759,34 +767,52 @@ function switchAdminTab(tabId, btn) {
   btn.classList.add('active');
 }
 
+// Arayüzde Rütbe Listesini Oluşturma
+function generateRoleOptions(currentRole, isDisabled, targetUsername) {
+  let html = `<select onchange="changeRole('${targetUsername}', this.value)" ${isDisabled ? 'disabled' : ''} style="padding:4px; background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color); border-radius:4px;">`;
+  for (const rank in RANK_LEVELS) {
+    let disabledAttr = "";
+    // Eğer işlemi yapan SMD_Samet değilse, KURUCU rütbesini seçemesin.
+    if (rank === "Kurucu" && currentUser.username !== 'SMD_Samet') {
+      disabledAttr = "disabled";
+    }
+    html += `<option value="${rank}" ${currentRole === rank ? 'selected' : ''} ${disabledAttr}>${rank}</option>`;
+  }
+  html += `</select>`;
+  return html;
+}
+
 function renderAdminUsers() {
   const users = JSON.parse(localStorage.getItem('site_users'));
   const tbody = el('adminUserList');
   tbody.innerHTML = "";
 
-  users.forEach(u => {
-    // Kendinden üstünü veya kendini düzenleme engeli
-    let canEdit = false;
-    if (currentUser.role === 'Kurucu' && u.username !== currentUser.username) canEdit = true;
-    if (currentUser.role === 'Yönetici' && u.role === 'Üye') canEdit = true;
+  const myLevel = RANK_LEVELS[currentUser.role] || 0;
 
-    const roleSelect = `
-      <select onchange="changeRole('${u.username}', this.value)" ${canEdit ? '' : 'disabled'} style="padding:2px; background:var(--input-bg); color:var(--text-main); border:1px solid var(--border-color);">
-        <option value="Üye" ${u.role === 'Üye' ? 'selected' : ''}>Üye</option>
-        <option value="Yönetici" ${u.role === 'Yönetici' ? 'selected' : ''}>Yönetici</option>
-        <option value="Kurucu" ${u.role === 'Kurucu' ? 'selected' : ''}>Kurucu</option>
-      </select>
-    `;
+  users.forEach(u => {
+    const targetLevel = RANK_LEVELS[u.role] || 0;
+    
+    // Yetki Kontrolleri:
+    // 1. Kendi rütbesini değiştiremez.
+    // 2. Kendinden yüksek veya eşit rütbedekini değiştiremez.
+    // 3. Sadece kendinden düşük rütbeleri yönetebilir.
+    let canEdit = false;
+    if (u.username !== currentUser.username && myLevel > targetLevel) {
+      canEdit = true;
+    }
+
+    let roleSelectHTML = generateRoleOptions(u.role, !canEdit, u.username);
 
     const krediBtns = canEdit ? `
-      <button class="btn-sm" onclick="editKredi('${u.username}', 100)">+100 Kredi</button>
-      <button class="btn-sm btn-danger" onclick="editKredi('${u.username}', -100)">-100 Kredi</button>
-    ` : `<span style="font-size:0.75rem; color:var(--text-muted);">Yetki Yok</span>`;
+      <button class="btn-sm" onclick="editKredi('${u.username}', 100)">+100 K</button>
+      <button class="btn-sm btn-danger" onclick="editKredi('${u.username}', -100)">-100 K</button>
+      <button class="btn-sm btn-danger" onclick="deleteUser('${u.username}')">Sil</button>
+    ` : `<span style="font-size:0.75rem; color:var(--text-muted);">İşlem Yapılamaz</span>`;
 
     tbody.innerHTML += `
       <tr>
         <td style="font-weight:bold; color:var(--primary-yellow);">${u.username}</td>
-        <td>${roleSelect}</td>
+        <td>${roleSelectHTML}</td>
         <td>${u.kredi}</td>
         <td>${krediBtns}</td>
       </tr>
@@ -797,22 +823,34 @@ function renderAdminUsers() {
 function changeRole(username, newRole) {
   let users = JSON.parse(localStorage.getItem('site_users'));
   const user = users.find(u => u.username === username);
-  
   if (!user) return;
-  
-  // Güvenlik Kontrolü
-  if (currentUser.role === 'Yönetici' && newRole !== 'Üye') {
-    alert("Yönetici sadece üye yetkisi verebilir!");
+
+  const myLevel = RANK_LEVELS[currentUser.role] || 0;
+  const targetLevel = RANK_LEVELS[user.role] || 0;
+  const newLevel = RANK_LEVELS[newRole] || 0;
+
+  // Güvenlik Kontrolleri
+  if (username === currentUser.username) {
+    alert("Kendi rütbenizi değiştiremezsiniz!");
     renderAdminUsers(); return;
   }
-  if (currentUser.role === 'Kurucu' && newRole === 'Kurucu' && user.username !== currentUser.username) {
-    alert("Başka birini Kurucu yapamazsınız!");
+  if (myLevel <= targetLevel) {
+    alert("Kendinizle eşit veya daha üst rütbedeki birini değiştiremezsiniz!");
     renderAdminUsers(); return;
+  }
+  
+  // Rütbe atama kontrolü (Sadece SMD_Samet Kurucu verebilir)
+  if (newLevel >= myLevel) {
+    if (currentUser.username !== 'SMD_Samet') {
+      alert("Kendinizle eşit veya daha üst bir rütbe veremezsiniz!");
+      renderAdminUsers(); return;
+    }
   }
 
   user.role = newRole;
   localStorage.setItem('site_users', JSON.stringify(users));
   renderAdminUsers();
+  alert(`${username} adlı kullanıcının rütbesi ${newRole} olarak güncellendi.`);
 }
 
 function editKredi(username, amount) {
@@ -824,6 +862,27 @@ function editKredi(username, amount) {
     localStorage.setItem('site_users', JSON.stringify(users));
     renderAdminUsers();
   }
+}
+
+// HESAP SİLME
+function deleteUser(username) {
+  if (!confirm(`DİKKAT: ${username} adlı kullanıcıyı kalıcı olarak silmek istediğinize emin misiniz?`)) return;
+
+  let users = JSON.parse(localStorage.getItem('site_users'));
+  const userToDelete = users.find(u => u.username === username);
+  
+  const myLevel = RANK_LEVELS[currentUser.role] || 0;
+  const targetLevel = RANK_LEVELS[userToDelete.role] || 0;
+
+  if (myLevel <= targetLevel) {
+    alert("Kendinizle eşit veya üst rütbedeki bir hesabı silemezsiniz!");
+    return;
+  }
+
+  users = users.filter(u => u.username !== username);
+  localStorage.setItem('site_users', JSON.stringify(users));
+  renderAdminUsers();
+  alert("Kullanıcı başarıyla silindi.");
 }
 
 function renderSettings() {
@@ -867,7 +926,7 @@ function handleAddAnnouncement(e) {
 }
 
 /* ==========================================
-   API VE SUNUCU DURUMU (Hata Korumalı)
+   API VE SUNUCU DURUMU
    ========================================== */
 const CONFIG = {
   queryIp: "AgalarlaSW.aternos.me:45913",
@@ -915,7 +974,7 @@ async function fetchStatus() {
 }
 
 /* ==========================================
-   KOPYALAMA VE KORUMA
+   KOPYALAMA VE KORUMA (F12 VB.)
    ========================================== */
 function copyIP(btn) {
   const ip = "AgalarlaSW.aternos.me";
