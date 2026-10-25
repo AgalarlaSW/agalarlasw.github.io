@@ -289,7 +289,6 @@
   <div class="ip-box">
     <div>
       <div class="ip-label">Sunucu IP Adresi</div>
-      <!-- Port gizlendi, sadece ana adres görünüyor -->
       <div class="ip-value" id="ipValue">AgalarlaSW.aternos.me</div>
     </div>
     <button class="copy-btn" id="copyBtn" onclick="copyIP()">IP Kopyala</button>
@@ -361,7 +360,6 @@
       </div>
       <div class="info-row">
         <span class="info-key">IP Adresi</span>
-        <!-- Port gizlendi -->
         <span class="info-val highlight">AgalarlaSW.aternos.me</span>
       </div>
       <div class="info-row">
@@ -393,19 +391,21 @@
 <script>
 /* AYARLAR */
 const CONFIG = {
-  // Görünen IP (port olmadan)
+  // Sitede görünecek temiz IP (Portsuz)
   displayIp: "AgalarlaSW.aternos.me",
-  // API sorgusu için tam adres (port dahil)
+  
+  // API'ye sorulacak tam adres (Portlu)
   queryIp: "AgalarlaSW.aternos.me:45913",
+  
   refreshMs: 30000 // 30 Saniye
 };
 
 const el = (id) => document.getElementById(id);
 
-// Görünen IP'yi ayarla
+// Ekranda portsuz IP göster
 el("ipValue").textContent = CONFIG.displayIp;
 
-/* IP KOPYALAMA */
+/* IP KOPYALAMA (Portlu kopyalar) */
 function copyIP() {
   const btn = el("copyBtn");
   const done = () => {
@@ -417,23 +417,20 @@ function copyIP() {
     }, 1800);
   };
 
-  // Panoya kopyalanacak adres (portlu)
-  const textToCopy = CONFIG.queryIp;
-
   if (navigator.clipboard && window.isSecureContext) {
-    navigator.clipboard.writeText(textToCopy).then(done).catch(fallbackCopy);
+    navigator.clipboard.writeText(CONFIG.queryIp).then(done).catch(fallbackCopy);
   } else {
     fallbackCopy();
   }
 
   function fallbackCopy() {
     const ta = document.createElement("textarea");
-    ta.value = textToCopy;
+    ta.value = CONFIG.queryIp;
     ta.style.position = "fixed";
     ta.style.opacity = "0";
     document.body.appendChild(ta);
     ta.select();
-    try { document.execCommand("copy"); done(); } catch (e) { alert("IP: " + textToCopy); }
+    try { document.execCommand("copy"); done(); } catch (e) { alert("IP: " + CONFIG.queryIp); }
     document.body.removeChild(ta);
   }
 }
@@ -476,16 +473,18 @@ function setStatus(state, playerCount, version) {
   }
 }
 
-/* API İSTEĞİ */
+/* API İSTEĞİ (Aternos uyumlu tam portlu sorgu) */
 async function fetchStatus() {
   try {
-    // Portlu adresle sorgula ve önbelleği atlatmak için zaman damgası ekle
-    const res = await fetch(
-      "https://api.mcsrvstat.us/3/" + CONFIG.queryIp + "?t=" + Date.now()
-    );
+    // Doğrudan tam IP:Port ile sorguluyoruz. Önbelleği kırmak için t= parametresi ekliyoruz.
+    const apiUrl = "https://api.mcsrvstat.us/3/" + CONFIG.queryIp + "?t=" + Date.now();
+    
+    const res = await fetch(apiUrl, { cache: "no-store" });
+    
     if (!res.ok) throw new Error("API hatası");
     const data = await res.json();
 
+    // Eğer API'den online: true dönerse
     if (data.online) {
       setStatus("online", data.players?.online, data.version);
     } else {
