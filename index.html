@@ -309,7 +309,8 @@
     </div>
     <div class="stat">
       <div class="stat-ico">🎮</div>
-      <div class="stat-val dim" id="versionStat" style="font-size: 1.2rem;">—</div>
+      <!-- Sürüm yazısının olduğu kısım -->
+      <div class="stat-val dim" id="versionStat" style="font-size: 1.2rem;">1.16.5-26.3</div>
     </div>
     <div class="stat-note">Oyuncu sayısı her 30 saniyede bir otomatik güncellenir.</div>
   </div>
@@ -393,12 +394,9 @@
    AYARLAR
    ========================================== */
 const CONFIG = {
-  // Sitede görünen adres (Portsuz)
   displayIp: "AgalarlaSW.aternos.me",
-  
-  // API'ye sorulacak tam adres (Portlu)
   queryIp: "AgalarlaSW.aternos.me:45913",
-  
+  customVersion: "1.16.5-26.3",
   refreshMs: 30000 // 30 Saniye
 };
 
@@ -406,6 +404,9 @@ const el = (id) => document.getElementById(id);
 
 // Ekranda portsuz IP göster
 el("ipValue").textContent = CONFIG.displayIp;
+
+// Sürüm yazısını özel olarak sabitle
+el("versionStat").textContent = CONFIG.customVersion;
 
 /* IP KOPYALAMA (Portlu kopyalar) */
 function copyIP() {
@@ -438,7 +439,7 @@ function copyIP() {
 }
 
 /* DURUM GÜNCELLEME */
-function setStatus(state, playerCount, version) {
+function setStatus(state, playerCount) {
   const pill = el("statusPill");
   const text = el("statusText");
   const maxCap = 50;
@@ -469,45 +470,25 @@ function setStatus(state, playerCount, version) {
     el("infoStatus").textContent = "Bilgi alınamadı";
     el("infoStatus").style.color = "#eab308";
   }
-
-  if (version) {
-    el("versionStat").textContent = version;
-  }
 }
 
 /* ==========================================
-   API İSTEĞİ (ÇİFT API SİSTEMİ)
-   1. mcsrvstat.us dener. Başarısızsa;
-   2. mcstatus.io dener.
+   API İSTEĞİ (Sadece Hızlı Olan mcstatus.io Kullanılıyor)
    ========================================== */
 async function fetchStatus() {
-  const timestamp = Date.now();
-  
   try {
-    // 1. API: mcsrvstat.us
-    let res = await fetch(`https://api.mcsrvstat.us/3/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
-    let data = await res.json();
+    const timestamp = Date.now();
+    // Yavaş olan mcsrvstat.us kaldırıldı. Doğrudan mcstatus.io kullanılıyor.
+    const res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
+    const data = await res.json();
 
     if (data.online) {
-      setStatus("online", data.players?.online, data.version);
-      return; // Başarılıysa diğer API'yi denemeye gerek yok
+      setStatus("online", data.players?.online);
+    } else {
+      setStatus("offline");
     }
-
-    // 2. API: mcstatus.io (Eğer 1. API offline dediyse buraya düşer)
-    res = await fetch(`https://api.mcstatus.io/v2/status/java/${CONFIG.queryIp}?t=${timestamp}`, { cache: "no-store" });
-    data = await res.json();
-
-    if (data.online) {
-      const ver = data.version?.name_clean || data.version?.name || "—";
-      setStatus("online", data.players?.online, ver);
-      return;
-    }
-
-    // İkisi de offline dediyse sunucu gerçekten kapalıdır
-    setStatus("offline");
-
   } catch (err) {
-    console.warn("API'lerden yanıt alınamadı:", err);
+    console.warn("API'den yanıt alınamadı:", err);
     setStatus("error");
   }
 }
